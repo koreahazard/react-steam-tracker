@@ -2,7 +2,7 @@ import axios from 'axios';
 import { ApiResponse, Game, Genre, PriceHistory, SteamIndex, WishList, AccountInfo } from '../types';
 
 const api = axios.create({
-    baseURL: 'http://43.203.124.85:8080',
+    baseURL: '/api'
 });
 
 api.interceptors.request.use((config) => {
