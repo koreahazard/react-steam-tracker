@@ -5,7 +5,7 @@ import GameDetailPage from './pages/GameDetailPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import WishListPage from './pages/WishListPage';
-import MyPage from './pages/MyPage';
+import MyPage from './pages/MyPage.tsx';
 
 function App() {
     return (
