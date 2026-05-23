@@ -78,7 +78,7 @@ export default function GameListPage() {
                 <h1 className="text-xl font-bold text-blue-400 cursor-pointer" onClick={() => navigate('/')}>
                     Steam Tracker
                 </h1>
-                <Button variant="ghost" className="text-gray-300 text-sm" onClick={() => navigate('/')}>← 홈</Button>
+                <Button variant="ghost" className="text-gray-300 text-sm" onClick={() => navigate('/')}>홈</Button>
             </div>
 
             <div className="max-w-5xl mx-auto px-4 md:px-8 py-6 flex flex-col gap-5">

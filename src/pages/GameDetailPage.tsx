@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getPriceHistory, addWishList } from '../api';
 import { PriceHistory } from '../types';
 import {
-    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+    ReferenceLine, ReferenceDot
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -22,14 +23,28 @@ export default function GameDetailPage() {
     const [error, setError] = useState('');
     const isLoggedIn = !!localStorage.getItem('accessToken');
 
-    const latestData = priceHistory.length > 0
-        ? priceHistory[priceHistory.length - 1]
-        : null;
+    const latestData = priceHistory.length > 0 ? priceHistory[priceHistory.length - 1] : null;
     const latestPrice = latestData?.price ?? null;
     const latestDiscount = latestData?.discountPercent ?? null;
-
     const minPrice = priceHistory.length > 0 ? Math.min(...priceHistory.map(h => h.price)) : null;
     const maxPrice = priceHistory.length > 0 ? Math.max(...priceHistory.map(h => h.price)) : null;
+    const avgPrice = priceHistory.length > 0
+        ? Math.round(priceHistory.reduce((sum, h) => sum + h.price, 0) / priceHistory.length)
+        : null;
+    const minPriceData = priceHistory.find(h => h.price === minPrice);
+
+    const formatDate = (dateStr: string) => {
+        const d = new Date(dateStr);
+        return `${d.getMonth() + 1}/${d.getDate()}`;
+    };
+
+    const formatYAxis = (value: number) => {
+        if (!maxPrice) return `${value}`;
+        if (maxPrice >= 100000) return `${(value / 10000).toFixed(0)}만`;
+        if (maxPrice >= 10000) return `${(value / 1000).toFixed(0)}k`;
+        if (maxPrice >= 1000) return `${(value / 100).toFixed(0)}백`;
+        return `${value}`;
+    };
 
     const fetchPriceHistory = async (p: number) => {
         try {
@@ -66,17 +81,17 @@ export default function GameDetailPage() {
         }
     };
 
-    const formatDate = (dateStr: string) => {
-        const d = new Date(dateStr);
-        return `${d.getMonth() + 1}/${d.getDate()}`;
-    };
-
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
+            const isMin = payload[0].value === minPrice;
             return (
                 <div className="bg-gray-800 border border-gray-600 rounded-lg p-3 shadow-xl">
                     <p className="text-gray-400 text-xs mb-1">{label}</p>
                     <p className="text-blue-400 font-bold text-sm">{payload[0].value.toLocaleString()}원</p>
+                    {isMin && <p className="text-red-400 text-xs mt-1">역대 최저가</p>}
+                    {payload[0].payload.discountPercent > 0 && (
+                        <p className="text-green-400 text-xs">{payload[0].payload.discountPercent}% 할인</p>
+                    )}
                 </div>
             );
         }
@@ -89,7 +104,7 @@ export default function GameDetailPage() {
                 <h1 className="text-xl font-bold text-blue-400 cursor-pointer" onClick={() => navigate('/')}>
                     Steam Tracker
                 </h1>
-                <Button variant="ghost" className="text-gray-300 text-sm" onClick={() => navigate('/games')}>← 게임 목록</Button>
+                <Button variant="ghost" className="text-gray-300 text-sm" onClick={() => navigate('/games')}>게임 목록</Button>
             </div>
 
             <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 flex flex-col gap-6">
@@ -114,37 +129,48 @@ export default function GameDetailPage() {
                             </div>
                             {minPrice !== null && maxPrice !== null && (
                                 <div className="flex gap-4 text-sm">
-                                    <span className="text-gray-400">최저 <span className="text-blue-400 font-semibold">{minPrice.toLocaleString()}원</span></span>
+                                    <span className="text-gray-400">최저 <span className="text-red-400 font-semibold">{minPrice.toLocaleString()}원</span></span>
+                                    <span className="text-gray-400">평균 <span className="text-yellow-400 font-semibold">{avgPrice?.toLocaleString()}원</span></span>
                                     <span className="text-gray-400">최고 <span className="text-gray-300 font-semibold">{maxPrice.toLocaleString()}원</span></span>
                                 </div>
                             )}
-                            <a
-                                href={`https://store.steampowered.com/app/${appId}/`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-xs text-gray-500 hover:text-blue-400 transition mt-1"
+
+                            href={`https://store.steampowered.com/app/${appId}/`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-gray-500 hover:text-blue-400 transition mt-1"
                             >
-                                Steam 스토어에서 보기
-                            </a>
+                            Steam 스토어에서 보기
+                        </a>
                         </div>
-                    )}
+                        )}
                 </div>
 
                 <Card className="bg-gray-900 border-gray-800">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-white text-base md:text-lg">가격 변동 기록</CardTitle>
+                        <div className="flex items-center justify-between">
+                            <CardTitle className="text-white text-base md:text-lg">가격 변동 기록</CardTitle>
+                            <div className="flex items-center gap-3 text-xs text-gray-400">
+                                <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-red-400 inline-block"></span>역대 최저가</span>
+                                <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-yellow-400 inline-block"></span>평균가</span>
+                            </div>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         {priceHistory.length === 0 ? (
                             <p className="text-gray-400 text-center py-10">데이터가 없습니다.</p>
                         ) : (
                             <>
-                                <ResponsiveContainer width="100%" height={220}>
-                                    <AreaChart data={priceHistory}>
+                                <ResponsiveContainer width="100%" height={260}>
+                                    <AreaChart data={priceHistory} margin={{ top: 10, right: 10, bottom: 0, left: 0 }}>
                                         <defs>
                                             <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3} />
+                                                <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.4} />
                                                 <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
+                                            </linearGradient>
+                                            <linearGradient id="discountGradient" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#22C55E" stopOpacity={0.2} />
+                                                <stop offset="95%" stopColor="#22C55E" stopOpacity={0} />
                                             </linearGradient>
                                         </defs>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#1F2937" />
@@ -159,18 +185,47 @@ export default function GameDetailPage() {
                                             stroke="#4B5563"
                                             tick={{ fontSize: 10, fill: '#9CA3AF' }}
                                             domain={['auto', 'auto']}
-                                            width={55}
-                                            tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
+                                            width={50}
+                                            tickFormatter={formatYAxis}
                                         />
                                         <Tooltip content={<CustomTooltip />} />
+                                        {avgPrice && (
+                                            <ReferenceLine
+                                                y={avgPrice}
+                                                stroke="#EAB308"
+                                                strokeDasharray="4 4"
+                                                strokeWidth={1.5}
+                                            />
+                                        )}
+                                        {minPrice && (
+                                            <ReferenceLine
+                                                y={minPrice}
+                                                stroke="#F87171"
+                                                strokeDasharray="4 4"
+                                                strokeWidth={1.5}
+                                            />
+                                        )}
                                         <Area
                                             type="monotone"
                                             dataKey="price"
                                             stroke="#3B82F6"
-                                            strokeWidth={2}
+                                            strokeWidth={2.5}
                                             fill="url(#priceGradient)"
                                             dot={false}
+                                            activeDot={{ r: 5, fill: '#3B82F6', stroke: '#fff', strokeWidth: 2 }}
+                                            isAnimationActive={true}
+                                            animationDuration={800}
                                         />
+                                        {minPriceData && (
+                                            <ReferenceDot
+                                                x={minPriceData.snapshotDate}
+                                                y={minPrice!}
+                                                r={5}
+                                                fill="#F87171"
+                                                stroke="#fff"
+                                                strokeWidth={2}
+                                            />
+                                        )}
                                     </AreaChart>
                                 </ResponsiveContainer>
                                 {hasMore && (

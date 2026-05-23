@@ -230,7 +230,7 @@ export default function MainPage() {
                                     >
                                         <span className="text-gray-500 text-sm w-5 text-right shrink-0">{index + 1}</span>
                                         <img
-                                            src={`https://cdn.akamai.steamstatic.com/steam/apps/${game.appId}/capsule_sm_120.jpg`}
+                                            src={`https://cdn.akamai.steamstatic.com/steam/apps/${game.appId}/header.jpg`}
                                             alt={game.name}
                                             className="w-12 h-9 object-cover rounded shrink-0"
                                             onError={(e) => (e.currentTarget.style.display = 'none')}
