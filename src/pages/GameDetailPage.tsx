@@ -118,7 +118,7 @@ export default function GameDetailPage() {
                                     <span className="text-gray-400">최고 <span className="text-gray-300 font-semibold">{maxPrice.toLocaleString()}원</span></span>
                                 </div>
                             )}
-
+                            <a
                                 href={`https://store.steampowered.com/app/${appId}/`}
                                 target="_blank"
                                 rel="noopener noreferrer"
