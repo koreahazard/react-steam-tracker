@@ -13,11 +13,11 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-export const getGameList = (page: number, size: number) =>
-    api.get<ApiResponse<Game[]>>(`/api/game`, { params: { page, size } });
+export const getGameList = (page: number, size: number, sortBy: string = 'default') =>
+    api.get<ApiResponse<Game[]>>(`/api/game`, { params: { page, size, sortBy } });
 
-export const getGameListByGenres = (genreIds: number[], page: number, size: number) =>
-    api.get<ApiResponse<Game[]>>(`/api/game`, { params: { genreIds: genreIds.join(','), page, size } });
+export const getGameListByGenres = (genreIds: number[], page: number, size: number, sortBy: string = 'default') =>
+    api.get<ApiResponse<Game[]>>(`/api/game`, { params: { genreIds: genreIds.join(','), page, size, sortBy } });
 
 export const getGenres = () =>
     api.get<ApiResponse<Genre[]>>(`/api/game/genre`);
