@@ -134,16 +134,14 @@ export default function GameDetailPage() {
                                     <span className="text-gray-400">최고 <span className="text-gray-300 font-semibold">{maxPrice.toLocaleString()}원</span></span>
                                 </div>
                             )}
-                            <a
-                            href={`https://store.steampowered.com/app/${appId}/`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-gray-500 hover:text-blue-400 transition mt-1"
+                            <span
+                                className="text-xs text-gray-500 cursor-pointer hover:text-blue-400 transition mt-1"
+                                onClick={() => window.open(`https://store.steampowered.com/app/${appId}/`, '_blank')}
                             >
-                            Steam 스토어에서 보기
-                        </a>
+                                Steam 스토어에서 보기
+                            </span>
                         </div>
-                        )}
+                    )}
                 </div>
 
                 <Card className="bg-gray-900 border-gray-800">
