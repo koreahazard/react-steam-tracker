@@ -119,15 +119,15 @@ export default function GameDetailPage() {
                                 </div>
                             )}
 
-                            href={`https://store.steampowered.com/app/${appId}/`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-gray-500 hover:text-blue-400 transition mt-1"
+                                href={`https://store.steampowered.com/app/${appId}/`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-gray-500 hover:text-blue-400 transition mt-1"
                             >
-                            Steam 스토어에서 보기
-                        </a>
+                                Steam 스토어에서 보기
+                            </a>
                         </div>
-                        )}
+                    )}
                 </div>
 
                 <Card className="bg-gray-900 border-gray-800">
