@@ -93,7 +93,6 @@ export default function GameDetailPage() {
             </div>
 
             <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 flex flex-col gap-6">
-                {/* 게임 헤더 */}
                 <div className="flex flex-col sm:flex-row gap-4 items-start">
                     <a href={`https://store.steampowered.com/app/${appId}/`} target="_blank" rel="noopener noreferrer" className="shrink-0">
                         <img
@@ -125,13 +124,12 @@ export default function GameDetailPage() {
                             rel="noopener noreferrer"
                             className="text-xs text-gray-500 hover:text-blue-400 transition mt-1"
                             >
-                            Steam 스토어에서 보기 &rarr;
+                            Steam 스토어에서 보기
                         </a>
                         </div>
                         )}
                 </div>
 
-                {/* 가격 차트 */}
                 <Card className="bg-gray-900 border-gray-800">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-white text-base md:text-lg">가격 변동 기록</CardTitle>
@@ -191,7 +189,6 @@ export default function GameDetailPage() {
                     </CardContent>
                 </Card>
 
-                {/* 위시리스트 */}
                 {isLoggedIn && (
                     <Card className="bg-gray-900 border-gray-800">
                         <CardHeader className="pb-2">
