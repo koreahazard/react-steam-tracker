@@ -12,6 +12,16 @@ api.interceptors.request.use((config) => {
     }
     return config;
 });
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem('accessToken');
+            window.location.href = '/';
+        }
+        return Promise.reject(error);
+    }
+);
 
 export const getGameList = (page: number, size: number, sortBy: string = 'default') =>
     api.get<ApiResponse<Game[]>>(`/api/game`, { params: { page, size, sortBy } });
