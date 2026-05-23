@@ -131,4 +131,43 @@ export default function GameListPage() {
                                     <img
                                         src={`https://cdn.akamai.steamstatic.com/steam/apps/${game.appId}/capsule_sm_120.jpg`}
                                         alt={game.name}
-                                        className=
+                                        className="w-full h-24 object-cover"
+                                        onError={(e) => (e.currentTarget.style.display = 'none')}
+                                    />
+                                    {game.discountPercent > 0 && (
+                                        <span className="absolute top-1 right-1 bg-green-600 text-white text-xs px-1.5 py-0.5 rounded font-bold">
+                                            -{game.discountPercent}%
+                                        </span>
+                                    )}
+                                </div>
+                                <CardContent className="p-3">
+                                    <p className="text-white text-xs font-semibold truncate mb-1">{game.name}</p>
+                                    <div className="flex items-baseline gap-1">
+                                        <p className="text-blue-400 text-sm font-bold">
+                                            {game.currentPrice === 0 ? '무료' : `${game.currentPrice.toLocaleString()}원`}
+                                        </p>
+                                        {game.discountPercent > 0 && (
+                                            <p className="text-gray-500 line-through text-xs">
+                                                {game.originalPrice.toLocaleString()}원
+                                            </p>
+                                        )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                )}
+
+                {loading && <p className="text-gray-400 text-center py-4">불러오는 중...</p>}
+
+                {hasMore && games.length > 0 && !loading && (
+                    <div className="flex justify-center mt-2">
+                        <Button variant="outline" className="text-gray-300 border-gray-700 text-sm" onClick={handleLoadMore}>
+                            더 보기
+                        </Button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
