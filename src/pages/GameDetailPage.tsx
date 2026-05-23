@@ -125,7 +125,7 @@ export default function GameDetailPage() {
                             rel="noopener noreferrer"
                             className="text-xs text-gray-500 hover:text-blue-400 transition mt-1"
                             >
-                            Steam 스토어에서 보기 →
+                            Steam 스토어에서 보기 &rarr;
                         </a>
                         </div>
                         )}
